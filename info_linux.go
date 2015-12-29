@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"fmt"
 	"io/ioutil"
+	"strings"
 	"syscall"
 
 	humanize "github.com/dustin/go-humanize"
@@ -47,16 +48,17 @@ func linuxMemInfo() (*MemStats, error) {
 			return nil, fmt.Errorf("unexpected line in proc stats: %q", string(e))
 		}
 
+		val := strings.Trim(string(parts[1]), " \n\t")
 		switch string(parts[0]) {
 		case "VmSize":
-			vmsize, err := humanize.ParseBytes(string(parts[1]))
+			vmsize, err := humanize.ParseBytes(val)
 			if err != nil {
 				return nil, err
 			}
 
 			stats.Used = vmsize
 		case "VmSwap":
-			swapsize, err := humanize.ParseBytes(string(parts[1]))
+			swapsize, err := humanize.ParseBytes(val)
 			if err != nil {
 				return nil, err
 			}
