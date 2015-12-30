@@ -1,7 +1,9 @@
 package sysinfo
 
 import (
+	"bytes"
 	"fmt"
+	"os/exec"
 	"syscall"
 )
 
@@ -23,4 +25,18 @@ func darwinDiskUsage(path string) (*DiskStats, error) {
 		Total:  total,
 		FsType: fmt.Sprint(stfst.Type),
 	}, nil
+}
+
+func darwinMemInfo() (*MemStats, error) {
+	out, err := exec.Command("vm_stat").Output()
+	if err != nil {
+		return nil, err
+	}
+
+	var mem MemStats
+	for _, l := range bytes.Split(out, []byte("\n")) {
+		parts := strings.Split(string(l))
+		if len(parts) != 2 {
+		}
+	}
 }
