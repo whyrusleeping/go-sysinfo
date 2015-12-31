@@ -1,14 +1,13 @@
 package sysinfo
 
 import (
-	"bytes"
 	"fmt"
-	"os/exec"
 	"syscall"
 )
 
 func init() {
 	diskUsageImpl = darwinDiskUsage
+	memInfoImpl = darwinMemInfo
 }
 
 func darwinDiskUsage(path string) (*DiskStats, error) {
@@ -28,15 +27,6 @@ func darwinDiskUsage(path string) (*DiskStats, error) {
 }
 
 func darwinMemInfo() (*MemStats, error) {
-	out, err := exec.Command("vm_stat").Output()
-	if err != nil {
-		return nil, err
-	}
-
-	var mem MemStats
-	for _, l := range bytes.Split(out, []byte("\n")) {
-		parts := strings.Split(string(l))
-		if len(parts) != 2 {
-		}
-	}
+	// TODO: use vm_stat on osx to gather memory information
+	return new(MemStats), nil
 }
